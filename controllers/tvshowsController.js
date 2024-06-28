@@ -1,5 +1,6 @@
 const Video = require("../model/TvShows");
 const AdVideos = require("../model/TvAdshow");
+const {format, startOfDay} = require("date-fns")
 
 const getCurrentVideo = async(req, res) =>{
     const videos = await Video.find().sort('startTime');
@@ -33,7 +34,8 @@ const getVideoAds=async(req,res)=>{
 
 const getAllVideos = async(req, res)=>{
     try {
-        const videos = await Video.find();
+        const today = startOfDay(new Date());
+        const videos = await Video.find({startTime: {$gte:today}});
         if(!videos) return res.status(204).json({"message":"no videos found"});
         res.json(videos);
     } catch{
